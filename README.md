@@ -1,6 +1,6 @@
 # android-playground
-Androidアプリケーションのサンプルです。
 
+Androidアプリケーションのサンプルです。
 
 ## Gradle の設定
 
@@ -8,7 +8,6 @@ Androidアプリケーションのサンプルです。
 * assemble時にBuildType毎に生成されるAPKファイルのファイル名を変更する。
 * Dokkaの設定
 * ユニットテストのカバレッジレポート出力
-
 
 ## 参照サイト
 
