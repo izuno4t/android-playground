@@ -9,9 +9,8 @@ ext {
     buildToolsVersion = '28.0.2'
 
     // App dependencies
-    // supportLibraryVersion = '27.1.0'
-    // guavaVersion = '18.0'
-    // junitVersion = '4.12'
+    supportLibraryVersion = '27.1.0'
+    guavaVersion = '18.0'
     // mockitoVersion = '1.10.19'
     // powerMockito = '1.6.2'
     // hamcrestVersion = '1.3'
@@ -22,7 +21,6 @@ ext {
     // constraint = '1.1.2'
     // supportLibrary = '27.1.1'
     // archLifecycle = '1.1.1'
-    // room = '1.1.1'
     // picasso = '2.71828'
     // timber = '4.7.1'
     // vision = '15.0.2'
@@ -50,11 +48,9 @@ buildscript {
         // in the individual module build.gradle files
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
-        
-        // classpath('com.dicedmelon.gradle:jacoco-android:0.1.3') {
-        //     exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-        // }
-        // classpath "org.jacoco:org.jacoco.core:$jacoco_version"
+         classpath('com.dicedmelon.gradle:jacoco-android:0.1.3') {
+             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+         }
     }
 }
 
@@ -62,7 +58,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        // maven { url "https://jitpack.io" }
     }
 }
 
