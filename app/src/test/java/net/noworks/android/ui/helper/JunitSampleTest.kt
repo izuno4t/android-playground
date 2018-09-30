@@ -6,10 +6,11 @@ import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 
+
 @RunWith(Enclosed::class)
 class JunitSampleTest {
  
-    class 足し算 {
+    class 加算 {
         lateinit var calculator: SampleCalculatorHelper
         @Before
         fun setup() {
@@ -21,7 +22,7 @@ class JunitSampleTest {
         }
     }
  
-    class 引き算 {
+    class 減算 {
         lateinit var calculator: SampleCalculatorHelper
         @Before
         fun setup() {
