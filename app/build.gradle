@@ -65,17 +65,7 @@ android {
 
 dokka{
     outputFormat = 'javadoc'
-    // sourceDirs = files('src/main/java')
     outputDirectory = "$buildDir/javadoc"
-    skipEmptyPackages = true
-    skipDeprecated = false
-    noStdlibLink = false
-}
-
-task dokkaJavaDoc(type: org.jetbrains.dokka.gradle.DokkaAndroidTask, overwrite: true) {
-    moduleName = "$rootProject.name"
-    outputFormat = "javadoc"
-    sourceDirs = files('src/main/java')
     skipEmptyPackages = true
     skipDeprecated = false
     noStdlibLink = false
