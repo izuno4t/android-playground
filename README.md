@@ -21,3 +21,4 @@ Androidアプリケーションのサンプルです。
 * [Androidアプリのパッケージ構成の個人的ベストプラクティス](http://kobakei.hatenadiary.jp/entry/2017/04/10/173226)
 * [mozilla-mobile/android-components](https://github.com/mozilla-mobile/android-components/blob/master/components/browser/domains/build.gradle)
 * [Android Gradle 3.0以上で出力するapkのファイル名を変更する](https://qiita.com/yamacraft/items/301f188b2433f47669ee)
+* [[android] Gradle resValueにより重複した文字列リソースが発生する](https://code.i-harness.com/ja/q/1ec3e9d)
