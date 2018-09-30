@@ -4,7 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 
 // apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'org.jetbrains.dokka-android'
-apply plugin: 'jacoco-android'
+// apply plugin: 'jacoco-android'
+apply plugin: "jacoco"
 
 
 android {
@@ -63,6 +64,39 @@ android {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.2"
+}
+// A list of directories which should be included in coverage report
+def coverageSourceDirs = ['src/main/java']
+// A list of files which should be excluded from coverage report since they are generated and/or framework code
+def coverageExcludeFiles = ['**/R.class', '**/R$*.class', '**/com/android/**/*.*',
+                            '**/BuildConfig.class', '**/*Activity*.class',
+                            '**/*Fragment*.class', '**/*Receiver.class',
+                            '**/*Manifest*.class', '**/*Application*.class']
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        xml.enabled true
+        html.enabled true
+        csv.enabled false
+        xml.destination "${buildDir}/reports/jacoco/jacocoTestReport.xml"
+        html.destination "${buildDir}/reports/jacoco/html"
+        classDirectories = files(
+                fileTree(
+                        dir: "${buildDir}/intermediates/classes/uiTest/debug",
+                        exclude: coverageExcludeFiles))
+    }
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files "${buildDir}/jacoco/testUiTestDebugUnitTest.exec"
+
+    doLast {
+        println "jacoco xml report has been generated to file://${buildDir}/reports/jacoco/jacocoTestReport.xml"
+        println "jacoco html report has been generated to file://${reports.html.destination}/index.html"
+    }
+}
+
 dokka{
     outputFormat = 'javadoc'
     outputDirectory = "$buildDir/javadoc"
@@ -71,13 +105,24 @@ dokka{
     noStdlibLink = false
 }
 
-jacocoAndroidUnitTestReport {
-  csv.enabled false
-  html.enabled true
-  xml.enabled true
-  excludes += ['**/AutoValue_*.*',
-              '**/*JavascriptBridge.class']
-}
+// task jacocoTestReport(type: JacocoReport) {
+//     reports {
+//         xml.enabled = true
+//         html.enabled = true
+//     }
+
+//     def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+//                         '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*']
+//     def kotlinDebugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+//     def javaDebugTree = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
+//     def mainSrc = "$project.projectDir/src/main/java"
+
+//     sourceDirectories = files([mainSrc])
+//     classDirectories = files([kotlinDebugTree, javaDebugTree])
+//     executionData = fileTree(dir: project.buildDir, includes: [
+//             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+//     ])
+// }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -87,31 +132,27 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testImplementation 'org.junit.platform:junit-platform-runner:1.3.1'
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testImplementation "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"
+    testImplementation("org.jetbrains.spek:spek-api:$spek_version")
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    
-    // spek
-    testImplementation "org.spekframework.spek2:spek-dsl-jvm:$spek_version"
-    testImplementation "org.spekframework.spek2:spek-runner-junit5:$spek_version"
-    // spek requires kotlin-reflect, omit when already in classpath
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
 
-project.afterEvaluate {
-    android.applicationVariants.all { variant ->
-        def realVariantName = variant.name
-        def variantName = variant.name.capitalize()
+// project.afterEvaluate {
+//     android.applicationVariants.all { variant ->
+//         def realVariantName = variant.name
+//         def variantName = variant.name.capitalize()
 
-        def task = project.tasks["jacocoTest${variantName}UnitTestReport"]
-        def defaultExcludes = task.classDirectories.excludes
+//         def task = project.tasks["jacocoTest${variantName}UnitTestReport"]
+//         def defaultExcludes = task.classDirectories.excludes
 
-        def excludes = defaultExcludes
+//         def excludes = defaultExcludes
 
-        def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${realVariantName}", excludes: excludes)
+//         def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${realVariantName}", excludes: excludes)
 
-        task.classDirectories.excludes = excludes
-        task.classDirectories += kotlinDebugTree
-    }
-}
+//         task.classDirectories.excludes = excludes
+//         task.classDirectories += kotlinDebugTree
+//     }
+// }
