@@ -1,11 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-
-// apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.dokka-android'
-// apply plugin: 'jacoco-android'
-apply plugin: "jacoco"
+apply plugin: 'jacoco-android'
 
 
 android {
@@ -40,8 +38,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+//    sourceSets {
+//        main.java.srcDirs += 'src/main/kotlin'
+//    }
+    dataBinding {
+        enabled = true
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt' // NOTE: commons 関連の jar で「duplicate files during packaging of APK」のエラーが出るため記述
@@ -58,43 +59,10 @@ android {
             }
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 jacoco {
     toolVersion = "0.8.2"
-}
-// A list of directories which should be included in coverage report
-def coverageSourceDirs = ['src/main/java']
-// A list of files which should be excluded from coverage report since they are generated and/or framework code
-def coverageExcludeFiles = ['**/R.class', '**/R$*.class', '**/com/android/**/*.*',
-                            '**/BuildConfig.class', '**/*Activity*.class',
-                            '**/*Fragment*.class', '**/*Receiver.class',
-                            '**/*Manifest*.class', '**/*Application*.class']
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports after running tests."
-    reports {
-        xml.enabled true
-        html.enabled true
-        csv.enabled false
-        xml.destination "${buildDir}/reports/jacoco/jacocoTestReport.xml"
-        html.destination "${buildDir}/reports/jacoco/html"
-        classDirectories = files(
-                fileTree(
-                        dir: "${buildDir}/intermediates/classes/uiTest/debug",
-                        exclude: coverageExcludeFiles))
-    }
-    sourceDirectories = files(coverageSourceDirs)
-    executionData = files "${buildDir}/jacoco/testUiTestDebugUnitTest.exec"
-
-    doLast {
-        println "jacoco xml report has been generated to file://${buildDir}/reports/jacoco/jacocoTestReport.xml"
-        println "jacoco html report has been generated to file://${reports.html.destination}/index.html"
-    }
 }
 
 dokka{
@@ -105,24 +73,11 @@ dokka{
     noStdlibLink = false
 }
 
-// task jacocoTestReport(type: JacocoReport) {
-//     reports {
-//         xml.enabled = true
-//         html.enabled = true
-//     }
-
-//     def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
-//                         '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*']
-//     def kotlinDebugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-//     def javaDebugTree = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
-//     def mainSrc = "$project.projectDir/src/main/java"
-
-//     sourceDirectories = files([mainSrc])
-//     classDirectories = files([kotlinDebugTree, javaDebugTree])
-//     executionData = fileTree(dir: project.buildDir, includes: [
-//             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-//     ])
-// }
+jacocoAndroidUnitTestReport {
+    csv.enabled false
+    html.enabled true
+    xml.enabled true
+}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -140,19 +95,22 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
-// project.afterEvaluate {
-//     android.applicationVariants.all { variant ->
-//         def realVariantName = variant.name
-//         def variantName = variant.name.capitalize()
+ project.afterEvaluate {
+     android.applicationVariants.all { variant ->
+         def realVariantName = variant.name
+         def variantName = variant.name.capitalize()
 
-//         def task = project.tasks["jacocoTest${variantName}UnitTestReport"]
-//         def defaultExcludes = task.classDirectories.excludes
+         def task = project.tasks["jacocoTest${variantName}UnitTestReport"]
+         def defaultExcludes = task.classDirectories.excludes
 
-//         def excludes = defaultExcludes
+         def excludes = defaultExcludes + ['**/R.class', '**/R$*.class', '**/com/android/**/*.*',
+                                           '**/BuildConfig.class', '**/*Activity*.class','**/DataBinder*.class',
+                                           '**/*Fragment*.class', '**/*Receiver.class', '**/*Manifest*.class',
+                                           '**/*Application*.class', 'android/**/*.*', '**/*$[0-9].*']
 
-//         def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${realVariantName}", excludes: excludes)
+         def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${realVariantName}", excludes: excludes)
 
-//         task.classDirectories.excludes = excludes
-//         task.classDirectories += kotlinDebugTree
-//     }
-// }
+         task.classDirectories.excludes = excludes
+         task.classDirectories += kotlinDebugTree
+     }
+ }

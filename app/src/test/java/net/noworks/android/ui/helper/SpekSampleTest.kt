@@ -15,27 +15,20 @@ object SpekSampleTest : Spek({
     describe("SampleCalculatorのテスト") {
         val calculator = SampleCalculatorHelper()
  
-        on("足し算") {
+        on("足算") {
             val sum = calculator.sum(2, 4)
-            assertEquals(6, sum)
- 
+
             it("2+4が6になるテスト") {
                 assertEquals(6, sum)
             }
         }
  
-        on("引き算") {
+        on("引算") {
             val subtract = calculator.subtract(4, 2)
-
-            it("hoge"){
-                println(subtract)
-                assertEquals(15, subtract)
-
-            }
 
             it("4-2は2になるテスト") {
                 println(subtract)
-                assertEquals(15, subtract)
+                assertEquals(2, subtract)
             }
         }
     }

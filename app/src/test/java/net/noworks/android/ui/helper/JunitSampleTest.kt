@@ -30,7 +30,7 @@ class JunitSampleTest {
         }
         @Test
         fun `4引く2が2になるテストになるテスト`() {
-            assertEquals(2, calculator.sum(4, 2))
+            assertEquals(2, calculator.subtract(4, 2))
         }
     }
 }
