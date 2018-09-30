@@ -35,7 +35,6 @@ android {
             minifyEnabled false
             testCoverageEnabled true
             signingConfig signingConfigs.develop
-            //resValue "string", "app_name", "遊び場(debug)"
         }
         release {
             manifestPlaceholders = [applicationLabel:"遊び場(release)"]
@@ -43,12 +42,8 @@ android {
             versionNameSuffix '-RELEASE'
             //shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //resValue "string", "app_name", "遊び場(release)"
         }
     }
-//    sourceSets {
-//        main.java.srcDirs += 'src/main/kotlin'
-//    }
     dataBinding {
         enabled = true
     }
