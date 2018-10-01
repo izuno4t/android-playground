@@ -10,6 +10,6 @@ class HelloWorldService {
      * 挨拶を返します。
      */
     fun greeting(): String{
-        return "Hello World"
+        return "Hello World."
     }
 }
